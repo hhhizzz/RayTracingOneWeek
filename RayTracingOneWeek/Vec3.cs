@@ -9,6 +9,13 @@ public class Vec3
     public double Y { get; }
     public double Z { get; }
 
+    public Vec3()
+    {
+        X = 0;
+        Y = 0;
+        Z = 0;
+    }
+
     public Vec3(double x, double y, double z)
     {
         X = x;
