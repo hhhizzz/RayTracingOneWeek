@@ -48,8 +48,8 @@ public static class Program
         var world = new HitTableList();
         var materialGround = new DiffuseMaterial(new Color(0.8, 0.8, 0.0));
         var materialCenter = new DiffuseMaterial(new Color(0.7, 0.3, 0.3));
-        var materialLeft = new MetalMaterial(new Color(0.8, 0.8, 0.8));
-        var materialRight = new MetalMaterial(new Color(0.8, 0.6, 0.2));
+        var materialLeft = new MetalMaterial(new Color(0.8, 0.8, 0.8), 0.3);
+        var materialRight = new MetalMaterial(new Color(0.8, 0.6, 0.2), 1.0);
 
         world.Add(new Sphere(new Point3(0, -100.5, -1), 100, materialGround));
         world.Add(new Sphere(new Point3(0, 0, -1), 0.5, materialCenter));
