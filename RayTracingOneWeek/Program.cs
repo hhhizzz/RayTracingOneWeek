@@ -8,9 +8,33 @@ public static class Program
 {
     private static Color RayColor(Ray r)
     {
+        var t = HitSphere(new Point3(0, 0, -1), 0.5f, r);
+        if (t > 0)
+        {
+            var n = (r.At(t) - new Point3(0, 0, -1)).UnitVector();
+            return 0.5f * new Color(n.X + 1, n.Y + 1, n.Z + 1);
+        }
+
         Vec3 unitDirection = r.Direction.UnitVector();
-        double t = 0.5 * (unitDirection.Y + 1.0);
+        t = 0.5 * (unitDirection.Y + 1.0);
         return (1.0 - t) * new Color(1, 1, 1) + t * new Color(0.5, 0.7, 1.0);
+    }
+
+    private static double HitSphere(Point3 center, double radius, Ray r)
+    {
+        Vec3 oc = r.Origin - center;
+        double a = r.Direction.SquaredLength();
+        double b = 2 * Vec3.Dot(oc, r.Direction);
+        double c = oc.SquaredLength() - radius * radius;
+        double discriminant = b * b - 4 * a * c;
+        if (discriminant < 0)
+        {
+            return -1;
+        }
+        else
+        {
+            return (-b - Math.Sqrt(discriminant)) / (2.0 * a);
+        }
     }
 
     public static void Main(string[] args)

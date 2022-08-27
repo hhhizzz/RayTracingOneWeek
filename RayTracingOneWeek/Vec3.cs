@@ -53,9 +53,9 @@ public class Vec3
         return new Vec3(v1.X / d, v1.Y / d, v1.Z / d);
     }
 
-    public static Vec3 Dot(Vec3 v1, Vec3 v2)
+    public static double Dot(Vec3 v1, Vec3 v2)
     {
-        return new Vec3(v1.X * v2.X, v1.Y * v2.Y, v1.Z * v2.Z);
+        return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
     }
 
     public static Vec3 Cross(Vec3 v1, Vec3 v2)
