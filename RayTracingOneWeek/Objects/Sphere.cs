@@ -1,3 +1,5 @@
+using RayTracingOneWeek.Materials;
+
 namespace RayTracingOneWeek.Objects;
 
 using Point3 = Vec3;
@@ -6,12 +8,15 @@ public class Sphere : IHitTable
 {
     public Point3 Center { get; }
     public double Radius { get; }
+    
+    public IMaterial Material { get; }
 
 
-    public Sphere(Vec3 center, float radius)
+    public Sphere(Vec3 center, double radius, IMaterial material)
     {
         Center = center;
         Radius = radius;
+        Material = material;
     }
 
     public bool Hit(Ray r, double tMin, double tMax, out HitRecord rec)
@@ -49,6 +54,7 @@ public class Sphere : IHitTable
 
         var outwardNormal = (rec.P - Center) / Radius;
         rec.SetFaceNormal(r, outwardNormal);
+        rec.Material = Material;
         return true;
     }
 }

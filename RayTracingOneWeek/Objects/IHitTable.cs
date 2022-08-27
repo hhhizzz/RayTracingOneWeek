@@ -1,3 +1,5 @@
+using RayTracingOneWeek.Materials;
+
 namespace RayTracingOneWeek.Objects;
 
 using Point3 = Vec3;
@@ -6,6 +8,7 @@ public struct HitRecord
 {
     public Point3 P;
     public Vec3 Normal;
+    public IMaterial Material;
     public double T;
     public bool FrontFace;
     

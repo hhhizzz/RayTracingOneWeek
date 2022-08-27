@@ -93,6 +93,18 @@ public class Vec3
         return this / Length();
     }
 
+    public bool NearZero()
+    {
+        // Return true if the vector is close to zero in all dimensions.
+        const double s = 1e-8;
+        return (Math.Abs(X) < s) && (Math.Abs(Y) < s) && (Math.Abs(Z) < s);
+    }
+
+    public static Vec3 RandomUnitVector()
+    {
+        return RandomInUnitSphere().UnitVector();
+    }
+
     public static Vec3 RandomInUnitSphere()
     {
         while (true)
@@ -101,6 +113,11 @@ public class Vec3
             if (p.LengthSquared() >= 1) continue;
             return p;
         }
+    }
+
+    public static Vec3 Reflect(Vec3 v, Vec3 n)
+    {
+        return v - 2 * Vec3.Dot(v, n) * n;
     }
 
     public override string ToString()
