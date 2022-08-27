@@ -16,6 +16,16 @@ public static class Utility
         return min + (max - min) * RandomDouble();
     }
 
+    public static Vec3 RandomInUnitDisk()
+    {
+        while (true)
+        {
+            var p = new Vec3(RandomDouble(-1, 1), RandomDouble(-1, 1), 0);
+            if (p.LengthSquared() >= 1) continue;
+            return p;
+        }
+    }
+
     public static double DegreesToRadians(double degrees)
     {
         return degrees * Math.PI / 180.0;
