@@ -43,6 +43,7 @@ public static class Program
         const double aspectRatio = (double)16 / 9;
         const int imageWidth = 400;
         const int imageHeight = (int)(imageWidth / aspectRatio);
+        const int samplesPerPixel = 100;
 
         //World
         var world = new HitTableList();
@@ -50,17 +51,10 @@ public static class Program
         world.Add(new Sphere(new Point3(0, -100.5, -1), 100));
 
         //Camera
-        var viewportHeight = 2.0;
-        var viewportWidth = aspectRatio * viewportHeight;
-        var focalLength = 1.0;
+        Camera camera = new Camera();
 
-        var origin = new Point3(0, 0, 0);
-        var horizontal = new Vec3(viewportWidth, 0, 0);
-        var vertical = new Vec3(0, viewportHeight, 0);
-        var lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - new Vec3(0, 0, focalLength);
-
-        using StreamWriter file = new("image.ppm");
         //Render
+        using StreamWriter file = new("image.ppm");
         file.Write($"P3\n{imageWidth} {imageHeight}\n255\n");
 
         for (var j = imageHeight - 1; j >= 0; j--)
@@ -69,11 +63,16 @@ public static class Program
             Console.Error.Flush();
             for (var i = 0; i < imageWidth; i++)
             {
-                var u = (double)i / (imageWidth - 1);
-                var v = (double)j / (imageHeight - 1);
-                Ray r = new(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
-                Color pixelColor = RayColor(r, world);
-                ColorRender.WriteColor(file, pixelColor);
+                Color pixelColor = new(0, 0, 0);
+                for (var s = 0; s < samplesPerPixel; s++)
+                {
+                    var u = (i + Utility.RandomDouble()) / (imageWidth - 1);
+                    var v = (j + Utility.RandomDouble()) / (imageHeight - 1);
+                    Ray r = camera.GetRay(u, v);
+                    pixelColor += RayColor(r, world);
+                }
+
+                ColorRender.WriteColor(file, pixelColor, samplesPerPixel);
             }
         }
 
