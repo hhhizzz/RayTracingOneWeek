@@ -28,6 +28,11 @@ public class Vec3
         return new Vec3(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
     }
 
+    public static Vec3 operator -(Vec3 v)
+    {
+        return new Vec3(-v.X, -v.Y, -v.Z);
+    }
+
     public static Vec3 operator -(Vec3 v1, Vec3 v2)
     {
         return new Vec3(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
@@ -68,7 +73,7 @@ public class Vec3
         return Math.Sqrt(X * X + Y * Y + Z * Z);
     }
 
-    public double SquaredLength()
+    public double LengthSquared()
     {
         return X * X + Y * Y + Z * Z;
     }

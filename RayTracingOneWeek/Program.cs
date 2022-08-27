@@ -1,4 +1,6 @@
-﻿namespace RayTracingOneWeek;
+﻿using RayTracingOneWeek.Objects;
+
+namespace RayTracingOneWeek;
 //Image
 
 using Color = Vec3;
@@ -6,26 +8,24 @@ using Point3 = Vec3;
 
 public static class Program
 {
-    private static Color RayColor(Ray r)
+    private static Color RayColor(Ray r, IHitTable world)
     {
-        var t = HitSphere(new Point3(0, 0, -1), 0.5f, r);
-        if (t > 0)
+        if (world.Hit(r, 0, double.MaxValue, out var rec))
         {
-            var n = (r.At(t) - new Point3(0, 0, -1)).UnitVector();
-            return 0.5f * new Color(n.X + 1, n.Y + 1, n.Z + 1);
+            return 0.5 * (rec.Normal + new Color(1, 1, 1));
         }
 
-        Vec3 unitDirection = r.Direction.UnitVector();
-        t = 0.5 * (unitDirection.Y + 1.0);
+        var unitDirection = r.Direction.UnitVector();
+        var t = 0.5 * (unitDirection.Y + 1.0);
         return (1.0 - t) * new Color(1, 1, 1) + t * new Color(0.5, 0.7, 1.0);
     }
 
     private static double HitSphere(Point3 center, double radius, Ray r)
     {
         Vec3 oc = r.Origin - center;
-        double a = r.Direction.SquaredLength();
+        double a = r.Direction.LengthSquared();
         double b = 2 * Vec3.Dot(oc, r.Direction);
-        double c = oc.SquaredLength() - radius * radius;
+        double c = oc.LengthSquared() - radius * radius;
         double discriminant = b * b - 4 * a * c;
         if (discriminant < 0)
         {
@@ -43,6 +43,11 @@ public static class Program
         const double aspectRatio = (double)16 / 9;
         const int imageWidth = 400;
         const int imageHeight = (int)(imageWidth / aspectRatio);
+
+        //World
+        var world = new HitTableList();
+        world.Add(new Sphere(new Point3(0, 0, -1), 0.5f));
+        world.Add(new Sphere(new Point3(0, -100.5, -1), 100));
 
         //Camera
         var viewportHeight = 2.0;
@@ -67,7 +72,7 @@ public static class Program
                 var u = (double)i / (imageWidth - 1);
                 var v = (double)j / (imageHeight - 1);
                 Ray r = new(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
-                Color pixelColor = RayColor(r);
+                Color pixelColor = RayColor(r, world);
                 ColorRender.WriteColor(file, pixelColor);
             }
         }
