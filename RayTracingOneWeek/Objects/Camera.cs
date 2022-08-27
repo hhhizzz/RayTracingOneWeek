@@ -9,17 +9,21 @@ public class Camera
     private readonly Vec3 _horizontal;
     private readonly Vec3 _vertical;
 
-    public Camera()
+    public Camera(Point3 lookFrom, Point3 lookAt, Vec3 vUp, double vFov, double aspectRatio)
     {
-        var aspectRatio = 16.0 / 9.0;
-        var viewportHeight = 2.0;
+        var theta = Utility.DegreesToRadians(vFov);
+        var h = Math.Tan(theta / 2);
+        var viewportHeight = 2.0 * h;
         var viewportWidth = aspectRatio * viewportHeight;
-        var focalLength = 1.0;
 
-        _origin = new Point3(0, 0, 0);
-        _horizontal = new Point3(viewportWidth, 0, 0);
-        _vertical = new Point3(0, viewportHeight, 0);
-        _lowerLeftCorner = _origin - _horizontal / 2 - _vertical / 2 - new Point3(0, 0, focalLength);
+        var w = (lookFrom - lookAt).UnitVector();
+        var u = Vec3.Cross(vUp, w).UnitVector();
+        var v = Vec3.Cross(w, u);
+
+        _origin = lookFrom;
+        _horizontal = viewportWidth * u;
+        _vertical = viewportHeight * v;
+        _lowerLeftCorner = _origin - _horizontal / 2 - _vertical / 2 - w;
     }
 
     public Ray GetRay(double u, double v)

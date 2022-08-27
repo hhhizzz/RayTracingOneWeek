@@ -46,19 +46,20 @@ public static class Program
 
         //World
         var world = new HitTableList();
+
         var materialGround = new DiffuseMaterial(new Color(0.8, 0.8, 0.0));
         var materialCenter = new DiffuseMaterial(new Color(0.1, 0.2, 0.5));
         var materialLeft = new DielectricMaterial(1.5);
-        var materialRight = new MetalMaterial(new Color(0.8, 0.6, 0.2), 0);
+        var materialRight = new MetalMaterial(new Color(0.8, 0.6, 0.2), 0.0);
 
         world.Add(new Sphere(new Point3(0, -100.5, -1), 100, materialGround));
         world.Add(new Sphere(new Point3(0, 0, -1), 0.5, materialCenter));
         world.Add(new Sphere(new Point3(-1, 0, -1), 0.5, materialLeft));
-        world.Add(new Sphere(new Point3(-1, 0, -1), -0.4, materialLeft));
+        world.Add(new Sphere(new Point3(-1, 0, -1), -0.45, materialLeft));
         world.Add(new Sphere(new Point3(1, 0, -1), 0.5, materialRight));
 
         //Camera
-        Camera camera = new Camera();
+        Camera camera = new Camera(new Point3(-2, 2, 1), new Point3(0, 0, -1), new Vec3(0, 1, 0), 20, aspectRatio);
 
         //Render
         file.Write($"P3\n{imageWidth} {imageHeight}\n255\n");
