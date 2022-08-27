@@ -11,9 +11,9 @@ public class ColorRender
         var b = pixelColor.Z;
 
         var scale = 1.0 / samplesPerPixel;
-        r *= scale;
-        g *= scale;
-        b *= scale;
+        r = Math.Sqrt(scale * r);
+        g = Math.Sqrt(scale * g);
+        b = Math.Sqrt(scale * b);
 
         var rInt = (int)(256 * Math.Clamp(r, 0.0, 0.999));
         var gInt = (int)(256 * Math.Clamp(g, 0.0, 0.999));

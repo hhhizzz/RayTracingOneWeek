@@ -9,11 +9,6 @@ public class HitTableList : IHitTable
         _hitTables = new List<IHitTable>();
     }
 
-    public HitTableList(IHitTable hitTable)
-    {
-        _hitTables = new List<IHitTable> { hitTable };
-    }
-
     public void Add(IHitTable hitTable)
     {
         _hitTables.Add(hitTable);

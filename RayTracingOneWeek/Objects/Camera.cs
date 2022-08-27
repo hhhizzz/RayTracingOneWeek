@@ -4,10 +4,10 @@ using Point3 = Vec3;
 
 public class Camera
 {
-    private Point3 _origin;
-    private Point3 _lowerLeftCorner;
-    private Vec3 _horizontal;
-    private Vec3 _vertical;
+    private readonly Point3 _origin;
+    private readonly Point3 _lowerLeftCorner;
+    private readonly Vec3 _horizontal;
+    private readonly Vec3 _vertical;
 
     public Camera()
     {

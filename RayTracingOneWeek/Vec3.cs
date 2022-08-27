@@ -23,6 +23,16 @@ public class Vec3
         Z = z;
     }
 
+    public static Vec3 Random()
+    {
+        return new Vec3(Utility.RandomDouble(), Utility.RandomDouble(), Utility.RandomDouble());
+    }
+
+    public static Vec3 Random(double min, double max)
+    {
+        return new Vec3(Utility.RandomDouble(min, max), Utility.RandomDouble(min, max), Utility.RandomDouble(min, max));
+    }
+
     public static Vec3 operator +(Vec3 v1, Vec3 v2)
     {
         return new Vec3(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
@@ -55,7 +65,7 @@ public class Vec3
 
     public static Vec3 operator /(Vec3 v1, double d)
     {
-        return new Vec3(v1.X / d, v1.Y / d, v1.Z / d);
+        return v1 * (1 / d);
     }
 
     public static double Dot(Vec3 v1, Vec3 v2)
@@ -81,6 +91,16 @@ public class Vec3
     public Vec3 UnitVector()
     {
         return this / Length();
+    }
+
+    public static Vec3 RandomInUnitSphere()
+    {
+        while (true)
+        {
+            var p = Random(-1, 1);
+            if (p.LengthSquared() >= 1) continue;
+            return p;
+        }
     }
 
     public override string ToString()

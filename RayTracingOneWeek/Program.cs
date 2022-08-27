@@ -1,4 +1,5 @@
-﻿using RayTracingOneWeek.Objects;
+﻿using System.Diagnostics.CodeAnalysis;
+using RayTracingOneWeek.Objects;
 
 namespace RayTracingOneWeek;
 //Image
@@ -8,11 +9,18 @@ using Point3 = Vec3;
 
 public static class Program
 {
-    private static Color RayColor(Ray r, IHitTable world)
+    [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
+    private static Color RayColor(Ray r, IHitTable world, int depth)
     {
-        if (world.Hit(r, 0, double.MaxValue, out var rec))
+        if (depth <= 0)
         {
-            return 0.5 * (rec.Normal + new Color(1, 1, 1));
+            return new Color(0, 0, 0);
+        }
+
+        if (world.Hit(r, 0.001f, double.MaxValue, out var rec))
+        {
+            var target = rec.P + rec.Normal + Vec3.RandomInUnitSphere();
+            return 0.5 * RayColor(new Ray(rec.P, target - rec.P), world, depth - 1);
         }
 
         var unitDirection = r.Direction.UnitVector();
@@ -20,30 +28,16 @@ public static class Program
         return (1.0 - t) * new Color(1, 1, 1) + t * new Color(0.5, 0.7, 1.0);
     }
 
-    private static double HitSphere(Point3 center, double radius, Ray r)
-    {
-        Vec3 oc = r.Origin - center;
-        double a = r.Direction.LengthSquared();
-        double b = 2 * Vec3.Dot(oc, r.Direction);
-        double c = oc.LengthSquared() - radius * radius;
-        double discriminant = b * b - 4 * a * c;
-        if (discriminant < 0)
-        {
-            return -1;
-        }
-        else
-        {
-            return (-b - Math.Sqrt(discriminant)) / (2.0 * a);
-        }
-    }
-
+    [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public static void Main(string[] args)
     {
         //Image
+        using StreamWriter file = new("image.ppm");
         const double aspectRatio = (double)16 / 9;
         const int imageWidth = 400;
         const int imageHeight = (int)(imageWidth / aspectRatio);
         const int samplesPerPixel = 100;
+        const int maxDepth = 50;
 
         //World
         var world = new HitTableList();
@@ -54,13 +48,11 @@ public static class Program
         Camera camera = new Camera();
 
         //Render
-        using StreamWriter file = new("image.ppm");
         file.Write($"P3\n{imageWidth} {imageHeight}\n255\n");
 
         for (var j = imageHeight - 1; j >= 0; j--)
         {
-            Console.Error.Write($"\rScan lines remaining: {j}");
-            Console.Error.Flush();
+            Console.Error.Write($"\rScan lines remaining: {j:000}");
             for (var i = 0; i < imageWidth; i++)
             {
                 Color pixelColor = new(0, 0, 0);
@@ -68,8 +60,8 @@ public static class Program
                 {
                     var u = (i + Utility.RandomDouble()) / (imageWidth - 1);
                     var v = (j + Utility.RandomDouble()) / (imageHeight - 1);
-                    Ray r = camera.GetRay(u, v);
-                    pixelColor += RayColor(r, world);
+                    var r = camera.GetRay(u, v);
+                    pixelColor += RayColor(r, world, maxDepth);
                 }
 
                 ColorRender.WriteColor(file, pixelColor, samplesPerPixel);

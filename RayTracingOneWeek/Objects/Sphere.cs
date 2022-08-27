@@ -32,7 +32,7 @@ public class Sphere : IHitTable
 
         // Find the nearest root that lies in the acceptable range.
         var root = (-halfB - sqrtD) / a;
-        if (root < tMin || tMax < root)
+        if (root <= tMin || tMax < root)
         {
             root = (-halfB + sqrtD) / a;
             if (root < tMin || tMax < root)
@@ -41,10 +41,13 @@ public class Sphere : IHitTable
             }
         }
 
-        rec = new HitRecord();
-        rec.T = root;
+        rec = new HitRecord
+        {
+            T = root,
+        };
         rec.P = r.At(rec.T);
-        Vec3 outwardNormal = (rec.P - Center) / Radius;
+
+        var outwardNormal = (rec.P - Center) / Radius;
         rec.SetFaceNormal(r, outwardNormal);
         return true;
     }
